@@ -91,7 +91,7 @@ type Vizceral struct {
 func (v *Vizceral) NewVizceral() *Vizceral {
 	v.Name = "Bottle application map"
 	v.Renderer = "region"
-	v.Layout = "ringCenter"
+	v.Layout = "ltrTree"
 	v.MaxVolume = 0
 	v.NodeMap = new(VizceralNodes)
 	v.NodeMap.nodes = make(map[string]*VizceralNode)
@@ -159,7 +159,7 @@ func logFailedConnection(w http.ResponseWriter, r *http.Request) {
 	connection := r.URL.Path[12:]
 	if con, ok := vizceral.ConnectionMap.connections[connection]; ok {
 		mutex.Lock()
-		con.shadowMetrics.Danger++
+		con.shadowMetrics.Danger += 25
 		mutex.Unlock()
 	} else {
 		log.Printf("did not find connection: %s", connection)
@@ -172,7 +172,7 @@ func logCompletedConnection(w http.ResponseWriter, r *http.Request) {
 	connection = strings.Trim(connection, "\n")
 	if con, ok := vizceral.ConnectionMap.connections[connection]; ok {
 		mutex.Lock()
-		con.shadowMetrics.Normal++
+		con.shadowMetrics.Normal += 25
 		mutex.Unlock()
 	} else {
 		log.Printf("did not find connection: %s", connection)
