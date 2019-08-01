@@ -146,12 +146,17 @@ func (v *Vizceral) snapshotLoop() {
 		}
 		v.MaxVolume = volume
 
-		now := int32(time.Now().Unix())
-		v.Updated = now
-		for _, node := range v.NodeMap.nodes {
-			node.Updated = now
-		}
+		v.updateTimestamp()
+
 		log.Printf("took a snapshot with total volume = %d", volume)
+	}
+}
+
+func (v *Vizceral) updateTimestamp() {
+	now := int32(time.Now().Unix())
+	v.Updated = now
+	for _, node := range v.NodeMap.nodes {
+		node.Updated = now
 	}
 }
 
@@ -183,6 +188,7 @@ func logCompletedConnection(w http.ResponseWriter, r *http.Request) {
 func get(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
+	vizceral.updateTimestamp()
 	err := json.NewEncoder(w).Encode(vizceral)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
